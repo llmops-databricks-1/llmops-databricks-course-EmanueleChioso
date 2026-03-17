@@ -23,7 +23,13 @@ dependencies = [
     "databricks-agents==1.8.2",
     "psycopg==3.3.2",
     "psycopg-pool==3.3.0",
-    "psycopg[binary]==3.3.2"
+    "psycopg[binary]==3.3.2",
+    "beautifulsoup4==4.13.4",
+    "httpx==0.28.1",
+    "lxml==5.4.0",
+    "fire==0.7.0",
+    "curl-cffi==0.7.4",
+    "markdownify==0.14.1",
 ]
 
 [project.optional-dependencies]
@@ -40,7 +46,7 @@ ci = ["pre-commit>=4.1.0, <5",
 include-package-data = true
 
 [tool.setuptools.package-data]
-"your_custom_package" = ["../../../project_config.yml"]
+"fandom_wiki_scraper" = ["../../../project_config.yml"]
 
 [build-system]
 requires = ["setuptools>=72.0"]
@@ -48,7 +54,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["your_custom_package*"]
+include = ["fandom_wiki_scraper*"]
 
 [tool.setuptools.dynamic]
 version = { file = "version.txt" }
