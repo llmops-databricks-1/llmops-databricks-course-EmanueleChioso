@@ -1,0 +1,23 @@
+resources:
+  jobs:
+    fandom_wiki_scraper_job:
+      name: fandom-wiki-scraper
+      tags:
+        project_name: "llmops-databricks-course-EmanueleChioso"
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "4"
+            dependencies:
+              - ../dist/*.whl
+
+      tasks:
+        - task_key: fandom_wiki_scraper
+          environment_key: default
+          notebook_task:
+            notebook_path: ../notebooks/fandom_wiki_scraper.py
+            base_parameters:
+              env: ${bundle.target}
+              git_sha: "${var.git_sha}"
+              run_id: "{{job.run_id}}"

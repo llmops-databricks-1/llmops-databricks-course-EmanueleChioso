@@ -37,6 +37,34 @@ databricks-login-cauchy:
         --host https://dbc-b1b2f91a-d102.cloud.databricks.com \
         --profile cauchy
 
+# ── databricks asset bundles ──────────────────────────────────────────────────
+
+dab_target := "dev"
+dab_profile := "personal"
+
+# Validate the bundle configuration
+dab-validate target=dab_target:
+    databricks bundle validate --target {{ target }}
+
+# Deploy the bundle (builds wheel, uploads files)
+dab-deploy target=dab_target profile=dab_profile:
+    databricks bundle deploy --target {{ target }} --profile {{ profile }}
+
+# Run a job resource defined in the bundle
+# Usage: just dab-run hello_world_job
+dab-run job target=dab_target profile=dab_profile:
+    databricks bundle run {{ job }} --target {{ target }} --profile {{ profile }}
+
+# Deploy then run a job in one step
+# Usage: just dab-ship hello_world_job
+dab-ship job target=dab_target profile=dab_profile:
+    databricks bundle deploy --target {{ target }} --profile {{ profile }}
+    databricks bundle run {{ job }} --target {{ target }} --profile {{ profile }}
+
+# Destroy all bundle assets from the workspace
+dab-destroy target=dab_target profile=dab_profile:
+    databricks bundle destroy --target {{ target }} --profile {{ profile }}
+
 # ── quality ───────────────────────────────────────────────────────────────────
 
 # Run ruff linter + formatter via pre-commit
