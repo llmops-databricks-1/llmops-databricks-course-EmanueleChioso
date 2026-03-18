@@ -25,4 +25,7 @@ uv sync --extra dev
 ```
 
 
+## Scrapers
 
+- [Fandom Wiki Scraper](src/fandom_wiki_scraper/scraper/README.md) — BFS crawl and targeted scraping of any Fandom wiki
+- [Reddit Scraper](src/fandom_wiki_scraper/reddit/README.md) — r/OnePiece thread scraper (Theory, Analysis, Discussion, Big News)

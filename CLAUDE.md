@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # LLMOps Course on Databricks — Project Guidelines
 
 ## Development Environment
@@ -5,34 +9,41 @@
 This project uses `uv` for dependency management and running tools.
 Python **3.12** is required (matches Databricks Serverless Environment 4).
 
+Initial setup:
+```bash
+uv sync --extra dev
+```
+
 ### Running Commands
 
 **ALWAYS use `uv run` prefix for all Python tools:**
 
 ```bash
-# Linting, formatting
-uv run pre-commit run --all-files
+# Linting and formatting (via pre-commit / ruff)
+just lint
 
-# Running tests
-uv run pytest
+# Run all tests
+just test
 ```
 
-## Project Structure
+CI installs `--extra ci` (no `databricks-connect`/`ipykernel`). Local dev uses `--extra dev`.
 
-```
-llmops-databricks-course-EmanueleChioso/
-├── .claude/
-│   └── commands/           # Claude Code slash commands (fix-deps, run-notebook, ship)
-├── .github/
-│   └── workflows/ci.yml
-├── notebooks/              # Databricks-format notebooks
-│   └── hello_world.py
-├── resources/              # Databricks Asset Bundle job definitions (*.yml)
-├── tests/
-├── databricks.yml          # Databricks Asset Bundle configuration
-├── pyproject.toml
-└── version.txt
-```
+## Architecture
+
+### Package layout
+
+Source lives under `src/fandom_wiki_scraper/`. The distribution name is `llmops-databricks-course-EmanueleChioso`; the importable module is `fandom_wiki_scraper`. The version is read from `version.txt` at build time — bump that file to release a new version.
+
+A `project_config.yml` at the repo root is bundled as package data and is the intended place for project-level configuration (workspace names, catalog, etc.).
+
+### Databricks Asset Bundles
+
+`databricks.yml` defines the bundle. The `dev` target workspace host is a placeholder (`https://<your-databricks-workspace>`) — replace it with the actual workspace URL before deploying.
+
+Each notebook gets a matching job definition in `resources/<name>_job.yml`. Jobs run notebooks inside **Serverless Environment 4** with the project wheel pre-installed from `dist/*.whl`. Three base parameters are available in every notebook at runtime:
+- `env` — bundle target name (e.g. `dev`)
+- `git_sha` — passed via `--var git_sha=<sha>` at deploy time
+- `run_id` — filled by Databricks at job run time
 
 ## Dependency Management
 
@@ -65,6 +76,10 @@ After any dependency changes, validate the environment resolves:
 ```bash
 uv sync --extra dev
 ```
+
+## Linting
+
+Ruff is configured in `pyproject.toml` (line length 90, rules: F, E, W, B, I, UP, SIM, ERA, C, ANN). It runs automatically via pre-commit. Ruff auto-fixes are enabled (`--fix`); the hook fails if fixes were applied so you can review them.
 
 ## Skills
 
